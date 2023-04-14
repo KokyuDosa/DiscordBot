@@ -1,16 +1,34 @@
-# This is a sample Python script.
+import settings
+import discord
+from discord.ext import commands
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+logger = settings.logging.getLogger("bot")
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def run():
+    intents = discord.Intents.default()
+    intents.message_content = True
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    bot = commands.Bot(command_prefix="!", intents=intents)
+
+    @bot.event
+    async def on_ready():
+        logger.info(f"User: {bot.user} (ID: {bot.user.id})")
+
+    @bot.command(
+        aliases=['p'],
+        help="This is help",
+        description="This is description",
+        brief="This is brief",
+        enabled=True,
+        hidden=True
+    )
+    async def ping(ctx):
+        """ Answers with pong """
+        await ctx.send("pong")
+
+    bot.run(settings.DISCORD_API_SECRET, root_logger=True)
+
+
+if __name__ == "__main__":
+    run()
